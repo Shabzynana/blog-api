@@ -11,6 +11,7 @@ export class AbstractBaseEntity {
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
 
+
 //   @ApiProperty()
   @UpdateDateColumn({ name: 'updated_at' })
   updated_at: Date;
