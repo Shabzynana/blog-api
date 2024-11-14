@@ -1,6 +1,7 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import * as dotenv from 'dotenv';
+import { User } from 'src/modules/user/entites/user.entity';
 
 dotenv.config();
 
@@ -13,7 +14,8 @@ const dataSource = new DataSource({
   host: process.env.DB_HOST,
   port: +process.env.DB_PORT,
   database: process.env.DB_NAME,
-  entities: [process.env.DB_ENTITIES],
+  // entities: [process.env.DB_ENTITIES],
+  entities: [User],
   migrations: [process.env.DB_MIGRATIONS],
   synchronize: isDevelopment,
   migrationsTableName: 'migrations',
