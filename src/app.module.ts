@@ -6,6 +6,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
+import { PostModule } from './modules/post/post.module';
+import { CommentModule } from './modules/comment/comment.module';
 
 
 @Module({
@@ -20,7 +22,7 @@ import { AuthGuard } from './guards/auth.guard';
       }),
       dataSourceFactory: async () => dataSource,
     }),
-    AuthModule, UserModule],
+    AuthModule, UserModule, PostModule, CommentModule],
   controllers: [],
   providers: [
     {

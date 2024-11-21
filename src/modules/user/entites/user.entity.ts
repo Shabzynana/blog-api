@@ -1,4 +1,7 @@
 import * as bcrypt from 'bcryptjs';
+import { Post } from '../../post/entities/post.entity';
+import {Comment } from '../../comment/entities/comment.entity';
+
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -38,6 +41,17 @@ export class User extends AbstractBaseEntity {
     this.password = await bcrypt.hash(this.password, 10);
   }
 
-//   @OneToMany(() => Comment, comment => comment.user)
-//   comments?: Comment[];
+  @OneToMany(() => Post, (post) => post.author)
+  posts: Post[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments: Comment[];
+
+  @ManyToMany(() => User, (user) => user.following)
+  @JoinTable()
+  followers: User[];
+
+  @ManyToMany(() => User, (user) => user.followers)
+  following: User[];
+
 }
