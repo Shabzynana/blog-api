@@ -15,7 +15,7 @@ export class AuthController {
   @skipAuth()
   @ApiOperation({ summary: 'User Registration' })
   @ApiResponse({ status: 201, description: 'Register a new user', type: SuccessCreateUserResponse })
-  @ApiResponse({ status: 400, description: 'User already exists', type: ErrorCreateUserResponse })
+  @ApiResponse({ status: 404, description: 'User already exists', type: ErrorCreateUserResponse })
   @Post('signup')
   signUp(@Body() Dto: CreateAuthDto) {
     return this.authService.signUp(Dto);

@@ -24,7 +24,7 @@ export class PostController {
   @ApiOperation({ summary: 'Get all Blog' })
   @ApiResponse({ status: 200, description: 'User Blog' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
-  @Get()
+  @Get('blogs')
   AllBlog() {
     return this.postService.AllBlog();
   }
