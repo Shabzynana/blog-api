@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from '../user/entites/user.entity';
 import { skipAuth } from 'src/helpers/skipAuth';
 
-@Controller('post')
+@Controller('Blog')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
