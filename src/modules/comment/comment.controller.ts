@@ -20,7 +20,6 @@ export class CommentController {
   }
 
   @ApiBearerAuth()
-  // @skipAuth()
   @ApiOperation({ summary: 'Get all comment of a blog' })
   @ApiResponse({ status: 200, description: 'User comment' })
   @ApiResponse({ status: 401, description: 'Not Authorized' })
@@ -30,10 +29,15 @@ export class CommentController {
     return this.commentService.findAllComment(postId, req.user);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.commentService.findOne(+id);
-  // }
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all comment of a blog' })
+  @ApiResponse({ status: 200, description: 'User comment' })
+  @ApiResponse({ status: 401, description: 'Not Authorized' })
+  @ApiResponse({ status: 404, description: 'comment Not Found' })
+  @Get(':id/single-comment')
+  getSingleComment(@Param('id') id: string, @Request() req) {
+    return this.commentService.getSingleComment(id, req.user);
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {

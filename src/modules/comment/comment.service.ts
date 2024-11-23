@@ -43,8 +43,14 @@ export class CommentService {
 
     const savedcomment = await this.commentRepository.save(comment);
     return {
-      savedcomment
-    }
+      message: 'Comment added successfully!',
+      savedcomment: {
+        id: savedcomment.id,
+        content: savedcomment.content,
+        created_at: savedcomment.created_at,
+        author: `${fullUser.first_name} ${fullUser.last_name}`,
+      },
+    };
 
   }
 
@@ -63,12 +69,38 @@ export class CommentService {
       throw new HttpException("Comment Not Found",  HttpStatus.NOT_FOUND)
     }
 
-    return allComment
+    const comments = allComment.map((comment) => {
+      return {
+        comment_id: comment.id,
+        content: comment.content,
+        created_at: comment.created_at,
+        author: `${comment.author.first_name} ${comment.author.last_name}`,
+      }
+    })
+    return {
+      message: 'Comment added successfully!',
+      comments
+    }
 
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async getSingleComment(id: string, user: User) {
+
+    const comment = await this.commentRepository.findOne({
+      where: { id },
+      relations: { author: true },
+    })
+    if (!comment) {
+      throw new HttpException("Comment Not Found",  HttpStatus.NOT_FOUND)
+    }
+    return {
+      comment_id: comment.id,
+      content: comment.content,
+      created_at: comment.created_at,
+      author: `${comment.author.first_name} ${comment.author.last_name}`,
+    };
+    
+    
   }
 
   update(id: number, updateCommentDto: UpdateCommentDto) {
