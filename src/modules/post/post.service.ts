@@ -27,9 +27,15 @@ export class PostService {
       author: fullUser,
     });
 
-    const savedblog = await this.postRepository.save(blog);
+    const savedBlog = await this.postRepository.save(blog);
+    return {
+      blog_id: savedBlog.id,
+      title: savedBlog.title,
+      content: savedBlog.content,
+      author: `${fullUser.first_name} ${fullUser.last_name}`,
+      created_at: savedBlog.created_at,
+    };
 
-    return savedblog;
   }
 
   async AllBlog() {
@@ -37,23 +43,43 @@ export class PostService {
     const blog = await this.postRepository.find({
       relations: { author: true },
     })
-    return blog
+
+    if (blog.length === 0) {
+      throw new HttpException("Blog Not Found",  HttpStatus.NOT_FOUND)
+    }
+    
+    const posts = blog.map((post) => {
+      return {
+        blog_id: post.id,
+        title: post.title,
+        content: post.content,
+        author: `${post.author.first_name} ${post.author.last_name}`,
+        created_at: post.created_at
+      }
+    })
+    return posts
 
   }
 
-  async getSingleBlog(id: string, user: User): Promise<Post>  {
+  async getSingleBlog(id: string, user: User)  {
 
     // const blog = this.postRepository.findOne({
     //    where: { id, author: { id: user.id } } });
     const blog =  await this.postRepository.findOne({
-      where: { id }
+      where: { id },
+      relations: { author: true },
     });
     console.log("blog", blog)
     if (!blog) {
       throw new HttpException("Blog Not Found",  HttpStatus.NOT_FOUND)
     }
-
-    return blog
+    return {
+      blog_id: blog.id,
+      title: blog.title,
+      content: blog.content,
+      author: `${blog.author.first_name} ${blog.author.last_name}`,
+      created_at: blog.created_at,
+    };
 
   }
 
@@ -73,13 +99,16 @@ export class PostService {
       ...blog,
       ...updatePostDto
     })
-
-    return updatedBlog
+    return {
+      blog_id: updatedBlog.id,
+      title: updatedBlog.title,
+      content: updatedBlog.content,
+      author: `${updatedBlog.author.first_name} ${updatedBlog.author.last_name}`,
+      created_at: updatedBlog.created_at,
+    };
       
   }
 
-   
-  
 
   async deleteBlog(id: string, user: User) {
 
