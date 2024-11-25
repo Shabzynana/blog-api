@@ -19,8 +19,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SuccessCreateUserResponse {
-  @ApiProperty({ example: 200, description: 'The HTTP status code of the response' })
-  status_code: number;
 
   @ApiProperty({ example: 'User created successfully', description: 'The response message' })
   message: string;
@@ -32,6 +30,9 @@ export class SuccessCreateUserResponse {
   data: {
     user: UserData;
   };
+
+  @ApiProperty({ example: 'wd21113z2zzrt43t33n', description: 'The access token of the user' }) 
+  access_token: string
 }
 
 class UserData {

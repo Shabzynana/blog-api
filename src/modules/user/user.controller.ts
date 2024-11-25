@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req } from "@nestjs/common";
+import { Controller, Get, Param, Post, Req, Request } from "@nestjs/common";
 import {
     BadRequestException,
     ForbiddenException,
@@ -34,9 +34,14 @@ export class UserController {
     }
 
 
-    @Post('signin')
-    signin() {
-        return this.userService.signin()
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'All User Blog' })
+    @ApiResponse({ status: 200, description: 'Blogs retrieved' })
+    @ApiResponse({ status: 401, description: 'No token provided' })
+    @ApiResponse({ status: 403, description: 'Invalid token' })
+    @Get(':id/user-blog')
+    allUserBlog(@Param('id') id: string) {
+        return this.userService.allUserBlog(id)
     }
 
 }

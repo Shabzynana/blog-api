@@ -61,7 +61,7 @@ export class PostService {
 
   }
 
-  async getSingleBlog(id: string, user: User)  {
+  async getSingleBlog(id: string)  {
 
     // const blog = this.postRepository.findOne({
     //    where: { id, author: { id: user.id } } });

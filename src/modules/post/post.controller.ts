@@ -36,8 +36,8 @@ export class PostController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 404, description: 'Blog Not Found' })
   @Get(':id')
-  getSingleBlog(@Param('id') id: string, @Request() req) {
-    return this.postService.getSingleBlog(id, req.user);
+  getSingleBlog(@Param('id') id: string) {
+    return this.postService.getSingleBlog(id);
   }
 
   

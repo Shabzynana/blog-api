@@ -54,7 +54,7 @@ export class CommentService {
 
   }
 
-  async findAllComment(postId: string, user: User) {
+  async findAllComment(postId: string) {
 
     const fullPost = await this.postRepository.findOne({ where: { id: postId} });
     if (!fullPost) {
@@ -84,7 +84,7 @@ export class CommentService {
 
   }
 
-  async getSingleComment(id: string, user: User) {
+  async getSingleComment(id: string) {
 
     const comment = await this.commentRepository.findOne({
       where: { id },
