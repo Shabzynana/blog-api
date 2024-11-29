@@ -30,7 +30,10 @@ export class Post extends AbstractBaseEntity {
   @ManyToOne(() => User, (user) => user.posts)
   author: User;
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.post, {
+    cascade: true,
+    onDelete: 'CASCADE', // Ensures comments are deleted when a post is deleted
+  })
   comments: Comment[];
 
   //   @ManyToOne(() => Category, (category) => category.posts)

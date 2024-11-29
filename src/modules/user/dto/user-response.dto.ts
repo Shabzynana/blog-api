@@ -1,26 +1,23 @@
-// export class SuccessCreateUserResponse {
-//     status_code: number;
-//     message: string;
-//     data: {
-//       user: {
-//         first_name: string;
-//         last_name: string;
-//         email: string;
-//         created_at: Date;
-//       };
-//     };
-// }
-
-// export class ErrorCreateUserResponse {
-//     status_code: number;
-//     message: string;
-// }
-
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SuccessCreateUserResponse {
 
   @ApiProperty({ example: 'User created successfully', description: 'The response message' })
+  message: string;
+
+  @ApiProperty({
+    description: 'The response data containing the created user details',
+    type: () => UserData,
+  })
+  data: {
+    user: UserData;
+  };
+
+}
+
+export class SuccessLoginResponse {
+
+  @ApiProperty({ example: 'Logged in successfully', description: 'The response message' })
   message: string;
 
   @ApiProperty({
@@ -35,7 +32,11 @@ export class SuccessCreateUserResponse {
   access_token: string
 }
 
-class UserData {
+export class UserData {
+  
+  @ApiProperty({ example: 'wd21113z2zzrt43t33n', description: 'The id of the user' })
+  id: string;
+
   @ApiProperty({ example: 'John', description: 'The first name of the user' })
   first_name: string;
 

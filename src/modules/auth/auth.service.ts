@@ -7,6 +7,7 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { formatUser } from '../user/dto/response.dto';
 
 
 
@@ -32,7 +33,7 @@ export class AuthService {
 
       return {
         message: 'User created successfully',
-        user: newUser
+        data: formatUser(newUser)
       }
     } catch (error) {
       console.log(error)
@@ -61,7 +62,7 @@ export class AuthService {
 
     return {
       message: 'Logged in successfully',
-      d: user,
+      data: formatUser(user),
       access_token
     }
   }

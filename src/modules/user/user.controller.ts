@@ -44,4 +44,46 @@ export class UserController {
         return this.userService.allUserBlog(id)
     }
 
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Follow Users' })
+    @ApiResponse({ status: 200, description: 'Bussss' })
+    @ApiResponse({ status: 401, description: 'No token provided' })
+    @ApiResponse({ status: 403, description: 'Invalid token' })
+    @Post(':id/follow')
+    async followUser(@Param('id') id: string, @Request() req) {
+        return this.userService.followUser(id, req.user)
+    }
+
+    
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'unFollow Users' })
+    @ApiResponse({ status: 200, description: 'Blogs retrieved' })
+    @ApiResponse({ status: 401, description: 'No token provided' })
+    @ApiResponse({ status: 403, description: 'Invalid token' })
+    @Post(':id/unfollow')
+    async unfollowUser(@Param('id') id: string, @Request() req) {  
+        return this.userService.unfollowUser(id, req.user)
+    }
+
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Users Following'})
+    @ApiResponse({ status: 200, description: 'Following retrieved' })
+    @ApiResponse({ status: 401, description: 'No token provided' })
+    @ApiResponse({ status: 403, description: 'Invalid token' })
+    @Get(':id/following')
+    async getFollowing(@Param('id') id: string) {
+        return this.userService.getFollowing(id)
+    }
+
+
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Users Following'})
+    @ApiResponse({ status: 200, description: 'Following retrieved' })
+    @ApiResponse({ status: 401, description: 'No token provided' })
+    @ApiResponse({ status: 403, description: 'Invalid token' })
+    @Get(':id/followers')
+    async getFollowers(@Param('id') id: string) {
+        return this.userService.getFollowers(id)
+    }
+
 }

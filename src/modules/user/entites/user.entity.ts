@@ -48,7 +48,11 @@ export class User extends AbstractBaseEntity {
   comments: Comment[];
 
   @ManyToMany(() => User, (user) => user.following)
-  @JoinTable()
+  @JoinTable({
+    name: "user_followers", // Name of the join table
+    joinColumn: { name: "followerId", referencedColumnName: "id" },
+    inverseJoinColumn: { name: "followingId", referencedColumnName: "id" },
+  })
   followers: User[];
 
   @ManyToMany(() => User, (user) => user.followers)

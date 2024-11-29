@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { skipAuth } from '../../helpers/skipAuth';
-import { ErrorCreateUserResponse, SuccessCreateUserResponse } from '../user/dto/user-response.dto';
+import { ErrorCreateUserResponse, SuccessCreateUserResponse, SuccessLoginResponse } from '../user/dto/user-response.dto';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { LoginDto } from './dto/login.dto';
@@ -25,7 +25,7 @@ export class AuthController {
 
   @skipAuth()
   @ApiOperation({ summary: 'User Login' })
-  @ApiResponse({ status: 200, description: 'Logged In successfully', type: SuccessCreateUserResponse })
+  @ApiResponse({ status: 200, description: 'Logged In successfully', type: SuccessLoginResponse })
   @ApiResponse({ status: 400, description: 'Invalid Credentials', type: ErrorCreateUserResponse })
   @Post('signin')
   signIn(@Body() Dto: LoginDto) {

@@ -27,6 +27,8 @@ export class Comment extends AbstractBaseEntity {
   @ManyToOne(() => User, (user) => user.comments)
   author: User;
 
-  @ManyToOne(() => Post, (post) => post.comments)
+  @ManyToOne(() => Post, (post) => post.comments, {
+    onDelete: 'CASCADE', // Ensures the relation behaves consistently
+  })
   post: Post;
 }
