@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, Request } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Post, Req, Request } from "@nestjs/common";
 import {
     BadRequestException,
     ForbiddenException,
@@ -84,6 +84,21 @@ export class UserController {
     @Get(':id/followers')
     async getFollowers(@Param('id') id: string) {
         return this.userService.getFollowers(id)
+    }
+
+
+
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Soft delete a user account' })
+    @ApiResponse({ status: 204, description: 'Deletion in progress' })
+    @ApiResponse({ status: 400, description: 'Bad Request' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 500, description: 'Internal Server Error' })
+    @Delete(':id')
+    async softDeleteUser(@Param('id') id: string, @Request() req) {
+        console.log(id, 'user id')
+        console.log(req.user.id, 'current user id')
+        return this.userService.softDeleteUser(id, req.user)
     }
 
 }

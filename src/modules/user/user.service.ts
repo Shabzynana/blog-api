@@ -118,5 +118,22 @@ export class UserService {
 
         return followers
     }
+
+    async softDeleteUser(id: string, user: User) {
+
+        const userExist = await this.userRepository.findOne({ where: { id } });
+        if (!userExist){
+            throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+        }
+
+        if (userExist.id !== user.id) {
+            throw new HttpException('You are not authorized to delete this user.', HttpStatus.UNAUTHORIZED);
+        }
+
+        await this.userRepository.softDelete({ id });
+        return {
+            message: 'User deleted successfully'
+        }
+    }
     
 }

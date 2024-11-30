@@ -35,11 +35,11 @@ export class User extends AbstractBaseEntity {
   @DeleteDateColumn({ nullable: true })
   deletedAt?: Date;
 
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
+  // @BeforeInsert()
+  // @BeforeUpdate()
+  // async hashPassword() {
+  //   this.password = await bcrypt.hash(this.password, 10);
+  // }
 
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];

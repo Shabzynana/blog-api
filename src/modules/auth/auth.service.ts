@@ -22,11 +22,21 @@ export class AuthService {
   async signUp(createAuthDto: CreateAuthDto) {
 
     try {
-      const userExists = await this.userRepository.findOne({ where: { email: createAuthDto.email } });
+      const userExists = await this.userRepository.findOne({ 
+        where: { email: createAuthDto.email }, withDeleted: true });
       if (userExists) {
+        if (userExists.deletedAt) {
+          throw new HttpException(
+            'Account associated with these email has been deleted. Please contact support for assistance',
+            HttpStatus.NOT_FOUND
+          )
+        }
         console.log('User already exists');
         throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
       }
+
+      const hashPassword = await bcrypt.hash(createAuthDto.password, 10);
+      createAuthDto.password = hashPassword
 
       const newUser = await this.userRepository.create(createAuthDto);
       this.userRepository.save(newUser);
@@ -44,15 +54,24 @@ export class AuthService {
 
   async signIn(dto: LoginDto) {
 
-    const user =  await this.userRepository.findOne({ where: { email: dto.email } });
+    const user =  await this.userRepository.findOne({ 
+      where: { email: dto.email }, withDeleted: true, 
+    });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+
+    if (user.deletedAt) {
+      throw new HttpException(
+        'Account associated with these email has been deleted. Please contact support for assistance', 
+        HttpStatus.NOT_FOUND);
+    }  
 
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
+    console.log(dto.password, user.password)
 
     const access_token = this.jwtService.sign({
       id: user.id,
