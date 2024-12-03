@@ -32,8 +32,8 @@ export class User extends AbstractBaseEntity {
   @Column({ nullable: true })
   password: string;
 
-  @DeleteDateColumn({ nullable: true })
-  deletedAt?: Date;
+  // @DeleteDateColumn({ nullable: true })
+  // deletedAt?: Date;
 
   // @BeforeInsert()
   // @BeforeUpdate()

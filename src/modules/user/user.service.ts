@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, In } from "typeorm";
+import { Comment } from "../comment/entities/comment.entity";
 import { Post } from "../post/entities/post.entity";
 import { formatUser } from "./dto/response.dto";
 import { User } from "./entites/user.entity";
@@ -13,6 +14,8 @@ export class UserService {
         private userRepository: Repository<User>,
         @InjectRepository(Post)
         private postRepository: Repository<Post>,
+        @InjectRepository(Comment)
+        private commentRepository: Repository<Comment>,
     ) {}
 
     async currentUser(userId: string) {
@@ -121,7 +124,9 @@ export class UserService {
 
     async softDeleteUser(id: string, user: User) {
 
-        const userExist = await this.userRepository.findOne({ where: { id } });
+        const userExist = await this.userRepository.findOne({ where: { id },
+            relations: ['posts', 'comments']    
+        });
         if (!userExist){
             throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
         }
@@ -129,6 +134,10 @@ export class UserService {
         if (userExist.id !== user.id) {
             throw new HttpException('You are not authorized to delete this user.', HttpStatus.UNAUTHORIZED);
         }
+
+        await this.commentRepository.softDelete({ post: In(userExist.posts.map((post) => post.id)) });
+        await this.postRepository.softDelete({ author: { id: id } });
+        await this.commentRepository.softDelete({ author: { id: id } });
 
         await this.userRepository.softDelete({ id });
         return {

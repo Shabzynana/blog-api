@@ -53,7 +53,7 @@ export class PostService {
         blog_id: post.id,
         title: post.title,
         content: post.content,
-        author: `${post.author.first_name} ${post.author.last_name}`,
+        // author: `${post.author.first_name} ${post.author.last_name}`,
         created_at: post.created_at
       }
     })
