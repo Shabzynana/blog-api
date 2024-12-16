@@ -100,6 +100,7 @@ import { ExpressAdapter } from "@bull-board/express";
     QueueService
   ],
 })
+
 export class AppModule {
   constructor() {}
 }
