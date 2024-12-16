@@ -8,6 +8,10 @@ import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { formatUser } from '../user/dto/response.dto';
+import { forgotPasswordDto } from './dto/forgotPassword.dto';
+import { EmailService } from '../email/email.service';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
+import { ConfigService } from '@nestjs/config';
 
 
 
@@ -16,7 +20,11 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private emailService: EmailService,
+    // private readonly configService: ConfigService,
+
+
   ) {}
 
   async signUp(createAuthDto: CreateAuthDto) {
@@ -69,7 +77,7 @@ export class AuthService {
 
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Invalid credentialsddd', HttpStatus.UNAUTHORIZED);
     }
     console.log(dto.password, user.password)
 
@@ -86,20 +94,56 @@ export class AuthService {
     }
   }
 
+  async forgotPassword(dto: forgotPasswordDto) {
 
-  findAll() {
-    return `This action returns all auth`;
+    const userExist = await this.userRepository.findOne({ where: {email: dto.email}});
+    if (!userExist) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    const token = this.jwtService.sign({
+      id: userExist.id,
+      sub: userExist.id,
+      email: userExist.email,
+    });
+
+    await this.emailService.sendForgotPasswordMail(userExist.email, `${process.env.FRONTEND_URL}/reset-password`, token, userExist.last_name);
+    return {
+      message: "Please check your email to reset your password",
+    }
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+  async resetPassword(token: string, dto: ResetPasswordDto) {
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    try {
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
+      const decoded = this.jwtService.verify(token);
+      console.log("decode", decoded)
+      const userId = decoded.id;
+      console.log("user id", userId)
+
+      const userExist = await this.userRepository.findOne({ where: {id: userId}});
+      console.log("userexisrt", userExist.id)
+      if (!userExist) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      if (dto.new_password !== dto.confirm_password) {
+        throw new HttpException('Password does not match', HttpStatus.BAD_REQUEST);
+      }
+
+      const hashPassword = await bcrypt.hash(dto.new_password, 10);
+      userExist.password = hashPassword
+      await this.userRepository.save(userExist);
+      return {
+        message: "Password reset successfully",
+      }
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+  }  
+
+
+
 }

@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { skipAuth } from '../../helpers/skipAuth';
 import { ErrorCreateUserResponse, SuccessCreateUserResponse, SuccessLoginResponse } from '../user/dto/user-response.dto';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { forgotPasswordDto } from './dto/forgotPassword.dto';
 import { LoginDto } from './dto/login.dto';
+import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @ApiTags('Auth')
@@ -32,23 +34,22 @@ export class AuthController {
     return this.authService.signIn(Dto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.authService.findAll();
-  // }
+  @skipAuth()
+  @ApiOperation({ summary: 'User Login' })
+  @ApiResponse({ status: 200, description: 'Logged In successfully', type: SuccessLoginResponse })
+  @ApiResponse({ status: 400, description: 'Invalid Credentialsss', type: ErrorCreateUserResponse })
+  @Post('forgotPassword')
+  forgotPassword(@Body() dto: forgotPasswordDto) {
+    return this.authService.forgotPassword(dto)
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-  //   return this.authService.update(+id, updateAuthDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.authService.remove(+id);
-  // }
+  @skipAuth()
+  @ApiOperation({ summary: 'Reset Password' })
+  @ApiResponse({ status: 200, description: 'Logged In successfully', type: SuccessLoginResponse })
+  @ApiResponse({ status: 400, description: 'Invalid Credentials', type: ErrorCreateUserResponse })
+  @Post('reset-password')
+  resetPassword(@Query('token') token: string, @Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(token, dto)
+  }
 }

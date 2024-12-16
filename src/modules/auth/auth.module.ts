@@ -6,6 +6,8 @@ import { User } from '../user/entites/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import appConfig from '../../../config/auth.config';
+import { EmailModule } from '../email/email.module';
+import { EmailService } from '../email/email.service';
 
 
 @Module({
@@ -15,9 +17,10 @@ import appConfig from '../../../config/auth.config';
     secret: appConfig().jwtSecret,
     signOptions: { expiresIn: `${appConfig().jwtExpiry}s` },
   }),
+  EmailModule
 ],
   controllers: [AuthController],
-  providers: [AuthService, Repository],
+  providers: [AuthService, EmailService, Repository],
 })
 
 export class AuthModule {}

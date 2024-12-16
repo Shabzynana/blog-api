@@ -32,6 +32,12 @@ export class User extends AbstractBaseEntity {
   @Column({ nullable: true })
   password: string;
 
+  @Column({ default: false })
+  is_verified: boolean;
+
+  @Column({ nullable: true })
+  is_verified_date: Date;
+
   // @DeleteDateColumn({ nullable: true })
   // deletedAt?: Date;
 
