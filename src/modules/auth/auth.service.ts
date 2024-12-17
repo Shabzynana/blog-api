@@ -130,6 +130,30 @@ export class AuthService {
     }
   }
 
+  async resendConfirmEmail(userId: string) {
+
+    const userExist = await this.userRepository.findOne({ where: {id: userId}});
+    if (!userExist) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (userExist.is_verified) {
+      throw new HttpException('Account is already confirmed', HttpStatus.BAD_REQUEST);
+    }
+
+    const token = this.jwtService.sign({
+      id: userExist.id,
+      sub: userExist.id,
+      email: userExist.email,
+    });
+
+    await this.emailService.sendUserConfirmationMail(userExist.email, `${process.env.FRONTEND_URL}/confirm-email`, token, userExist.last_name);
+    return {
+      message: "Please check your email to confirm your account",
+    }
+    
+  }
+
   async forgotPassword(dto: forgotPasswordDto) {
 
     const userExist = await this.userRepository.findOne({ where: {email: dto.email}});
