@@ -35,6 +35,15 @@ export class AuthController {
   }
 
   @skipAuth()
+  @ApiOperation({ summary: 'Confirm Email' })
+  @ApiResponse({ status: 200, description: 'Email Confirmed successfully', type: SuccessLoginResponse })
+  @ApiResponse({ status: 400, description: 'Invalid Credentials', type: ErrorCreateUserResponse })
+  @Get('confirm-email')
+  confirmEmail(@Query('token') token: string) {
+    return this.authService.confirmEmail(token)
+  }
+
+  @skipAuth()
   @ApiOperation({ summary: 'User Login' })
   @ApiResponse({ status: 200, description: 'Logged In successfully', type: SuccessLoginResponse })
   @ApiResponse({ status: 400, description: 'Invalid Credentialsss', type: ErrorCreateUserResponse })

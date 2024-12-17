@@ -18,7 +18,7 @@ export default class EmailQueueConsumer {
       await this.mailerService.sendMail({
         ...mail,
         subject: 'Welcome to My App! Confirm your Email',
-        template: 'welcome',
+        template: 'Email-Verification',
       });
     } catch (sendWelcomeEmailJobError) {
       this.logger.error(`EmailQueueConsumer ~ sendWelcomeEmailJobError:  ${sendWelcomeEmailJobError}`);

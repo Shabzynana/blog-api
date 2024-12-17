@@ -25,7 +25,10 @@ export class UserService {
             throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
           }
 
-        return user
+        const currentUser = formatUser(user);
+        return {
+            currentUser
+        }
     }
 
     async allUserBlog(userId: string) {
@@ -56,6 +59,10 @@ export class UserService {
         }
         if (!following) {
             throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+        }
+
+        if (userExist.id === followingId) {
+            throw new HttpException('You cannot follow yourself.', HttpStatus.BAD_REQUEST);
         }
 
         if (!Array.isArray(userExist.following)) {
@@ -118,7 +125,6 @@ export class UserService {
         }
 
         const followers = userExist.followers.map((follow) => formatUser(follow));
-
         return followers
     }
 

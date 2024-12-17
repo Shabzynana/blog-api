@@ -49,6 +49,15 @@ export class AuthService {
       const newUser = await this.userRepository.create(createAuthDto);
       this.userRepository.save(newUser);
 
+      const token = this.jwtService.sign({
+        id: newUser.id,
+        email: newUser.email,
+        sub: newUser.id,
+      });
+
+      const url = `${process.env.FRONTEND_URL}/confirm-email`
+      await this.emailService.sendUserConfirmationMail(newUser.email, url, token, newUser.last_name);
+
       return {
         message: 'User created successfully',
         data: formatUser(newUser)
@@ -91,6 +100,33 @@ export class AuthService {
       message: 'Logged in successfully',
       data: formatUser(user),
       access_token
+    }
+  }
+
+
+  async confirmEmail(token: string) {
+
+    try {
+
+      const decoded = this.jwtService.verify(token);
+      console.log("decode", decoded)
+      const userId = decoded.email;
+      console.log("user id", userId)
+
+      const userExist = await this.userRepository.findOne({ where: {email: userId}});
+      console.log("userexisrt", userExist.id)
+      if (!userExist) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      userExist.is_verified = true,
+      userExist.is_verified_date = new Date()
+      await this.userRepository.save(userExist);
+      return {
+        message: "Email verified successfully"
+      }
+    } catch (error) {
+      const statusCode = error.status || error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR;
+      throw new HttpException(error.message, statusCode);
     }
   }
 

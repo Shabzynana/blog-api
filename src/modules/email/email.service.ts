@@ -10,30 +10,31 @@ import QueueService from './queue.service';
 export class EmailService {
   constructor(private readonly mailerService: QueueService) {}
 
-  async sendUserConfirmationMail(email: string, url: string, token: string) {
+  async sendUserConfirmationMail(email: string, url: string, token: string, name: string) {
     const link = `${url}?token=${token}`;
     const mailPayload: MailInterface = {
       to: email,
       context: {
         link,
         email,
+        name,
       },
     };
 
     await this.mailerService.sendMail({ variant: 'welcome', mail: mailPayload });
   }
 
-  async sendUserEmailConfirmationOtp(email: string, otp: string) {
-    const mailPayload: MailInterface = {
-      to: email,
-      context: {
-        otp,
-        email,
-      },
-    };
+  // async sendUserEmailConfirmationOtp(email: string, otp: string) {
+  //   const mailPayload: MailInterface = {
+  //     to: email,
+  //     context: {
+  //       otp,
+  //       email,
+  //     },
+  //   };
 
-    await this.mailerService.sendMail({ variant: 'register-otp', mail: mailPayload });
-  }
+  //   await this.mailerService.sendMail({ variant: 'register-otp', mail: mailPayload });
+  // }
 
   async sendForgotPasswordMail(email: string, url: string, token: string, name: string) {
     const link = `${url}?token=${token}`;
