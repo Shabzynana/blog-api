@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { skipAuth } from '../../helpers/skipAuth';
 import { ErrorCreateUserResponse, SuccessCreateUserResponse, SuccessLoginResponse } from '../user/dto/user-response.dto';
 import { AuthService } from './auth.service';
@@ -32,6 +32,29 @@ export class AuthController {
   @Post('signin')
   signIn(@Body() Dto: LoginDto) {
     return this.authService.signIn(Dto);
+  }
+
+  @skipAuth()
+  @ApiOperation({ summary: 'Confirm Email' })
+  @ApiResponse({ status: 200, description: 'Email Confirmed successfully', type: SuccessLoginResponse })
+  @ApiResponse({ status: 400, description: 'Invalid Credentials', type: ErrorCreateUserResponse })
+  @Get('confirm-email')
+  confirmEmail(@Query('token') token: string) {
+    return this.authService.confirmEmail(token)
+  }
+  
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'resend email confirmation link' })
+  @ApiResponse({ status: 404, description: 'User not founfd'})
+  @ApiResponse({ status: 403, description: 'Invalid token' })
+  @ApiResponse({ status: 401, description: 'Token expired' })
+  @Post('resend-confirm-email')
+  resendConfirmEmail(@Req() request: Request) {
+
+    const user = request['user'];
+    const userId = user.id;
+    return this.authService.resendConfirmEmail(userId)
   }
 
   @skipAuth()

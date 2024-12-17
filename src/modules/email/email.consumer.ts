@@ -18,29 +18,13 @@ export default class EmailQueueConsumer {
       await this.mailerService.sendMail({
         ...mail,
         subject: 'Welcome to My App! Confirm your Email',
-        template: 'welcome',
+        template: 'Email-Verification',
       });
     } catch (sendWelcomeEmailJobError) {
       this.logger.error(`EmailQueueConsumer ~ sendWelcomeEmailJobError:  ${sendWelcomeEmailJobError}`);
     }
   }
 
-  @Process('waitlist')
-  async sendWaitlistEmailJob(job: Job<MailInterface>) {
-    try {
-      const {
-        data: { mail },
-      } = job;
-
-      await this.mailerService.sendMail({
-        ...mail,
-        subject: 'Waitlist Confirmation',
-        template: 'waitlist',
-      });
-    } catch (sendWaitlistEmailJobError) {
-      this.logger.error(`EmailQueueConsumer ~ sendWaitlistEmailJobError: ${sendWaitlistEmailJobError}`);
-    }
-  }
 
   @Process('reset-password')
   async sendResetPasswordEmailJob(job: Job<MailInterface>) {
@@ -59,67 +43,5 @@ export default class EmailQueueConsumer {
     }
   }
 
-  @Process('newsletter')
-  async sendNewsletterEmailJob(job: Job<MailInterface>) {
-    try {
-      const {
-        data: { mail },
-      } = job;
-      await this.mailerService.sendMail({
-        ...mail,
-        subject: 'Monthly Newsletter',
-        template: 'newsletter',
-      });
-    } catch (sendNewsletterEmailJobError) {
-      this.logger.error(`EmailQueueConsumer ~ sendNewsletterEmailJobError:   ${sendNewsletterEmailJobError}`);
-    }
-  }
-
-  @Process('register-otp')
-  async sendTokenEmailJob(job: Job<MailInterface>) {
-    try {
-      const {
-        data: { mail },
-      } = job;
-      await this.mailerService.sendMail({
-        ...mail,
-        subject: 'Welcome to My App! Confirm your Email',
-        template: 'register-otp',
-      });
-    } catch (sendTokenEmailJobError) {
-      this.logger.error(`EmailQueueConsumer ~ sendTokenEmailJobError:   ${sendTokenEmailJobError}`);
-    }
-  }
-
-  @Process('in-app-notification')
-  async sendLoginOtpEmailJob(job: Job<MailInterface>) {
-    try {
-      const {
-        data: { mail },
-      } = job;
-      await this.mailerService.sendMail({
-        ...mail,
-        subject: 'Login with OTP',
-        template: 'login-otp',
-      });
-    } catch (sendLoginOtpEmailJobError) {
-      this.logger.error(`EmailQueueConsumer ~ sendLoginOtpEmailJobError:   ${sendLoginOtpEmailJobError}`);
-    }
-  }
-
-  @Process('login-otp')
-  async sendNotificationMail(job: Job<MailInterface>) {
-    try {
-      const {
-        data: { mail },
-      } = job;
-      await this.mailerService.sendMail({
-        ...mail,
-        subject: 'In-App, Notification',
-        template: 'notification',
-      });
-    } catch (sendLoginOtpEmailJobError) {
-      this.logger.error(`EmailQueueConsumer ~ sendLoginOtpEmailJobError:   ${sendLoginOtpEmailJobError}`);
-    }
-  }
+  
 }
