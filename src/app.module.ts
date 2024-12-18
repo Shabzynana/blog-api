@@ -57,7 +57,7 @@ import { ExpressAdapter } from "@bull-board/express";
             },
           },
           defaults: {
-            from: `"Team Remote Bingo" <${configService.get<string>('SMTP_USERPR')}>`,
+            from: `"Team Remote Bingo" <${configService.get<string>('SMTP_FROM')}>`,
           },
           template: {
             dir: process.cwd() + '/src/modules/email/templates',
