@@ -15,7 +15,6 @@ import { EmailService } from '../email/email.service';
   JwtModule.register({
     global: true,
     secret: appConfig().jwtSecret,
-    signOptions: { expiresIn: `${appConfig().jwtExpiry}s` },
   }),
   EmailModule
 ],
