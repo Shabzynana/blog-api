@@ -94,7 +94,10 @@ export class AuthService {
       id: user.id,
       sub: user.id,
       email: user.email,
-    });
+    },{
+      expiresIn: '1d',
+    },
+    );
 
     return {
       message: 'Logged in successfully',
@@ -145,7 +148,11 @@ export class AuthService {
       id: userExist.id,
       sub: userExist.id,
       email: userExist.email,
-    });
+    },
+    {
+      expiresIn: '3m',
+    },
+    );
 
     await this.emailService.sendUserConfirmationMail(userExist.email, `${process.env.FRONTEND_URL}/confirm-email`, token, userExist.last_name);
     return {
@@ -164,7 +171,11 @@ export class AuthService {
       id: userExist.id,
       sub: userExist.id,
       email: userExist.email,
-    });
+    },
+    {
+      expiresIn: '3m', 
+    },
+    );
 
     await this.emailService.sendForgotPasswordMail(userExist.email, `${process.env.FRONTEND_URL}/reset-password`, token, userExist.last_name);
     return {
