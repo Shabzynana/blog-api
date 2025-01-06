@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Req, Request } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Post, Req, Request, Logger } from "@nestjs/common";
 import {
     BadRequestException,
     ForbiddenException,
@@ -96,8 +96,8 @@ export class UserController {
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     @Delete(':id')
     async softDeleteUser(@Param('id') id: string, @Request() req) {
-        console.log(id, 'user id')
-        console.log(req.user.id, 'current user id')
+        Logger.log(id, 'user id')
+        Logger.log(req.user.id, 'current user id')
         return this.userService.softDeleteUser(id, req.user)
     }
 

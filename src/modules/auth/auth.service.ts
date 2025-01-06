@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entites/user.entity';
@@ -12,6 +12,7 @@ import { forgotPasswordDto } from './dto/forgotPassword.dto';
 import { EmailService } from '../email/email.service';
 import { ResetPasswordDto } from './dto/resetPassword.dto';
 import { ConfigService } from '@nestjs/config';
+// import { Logger } from 'nestjs-pino';
 
 
 
@@ -39,7 +40,7 @@ export class AuthService {
             HttpStatus.NOT_FOUND
           )
         }
-        console.log('User already exists');
+        Logger.log('User already exists');
         throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
       }
 
@@ -63,7 +64,7 @@ export class AuthService {
         data: formatUser(newUser)
       }
     } catch (error) {
-      console.log(error)
+      Logger.error(error)
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   } 
@@ -86,9 +87,9 @@ export class AuthService {
 
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) {
-      throw new HttpException('Invalid credentialsddd', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
-    console.log(dto.password, user.password)
+    Logger.log(dto.password, user.password)
 
     const access_token = this.jwtService.sign({
       id: user.id,
@@ -112,12 +113,12 @@ export class AuthService {
     try {
 
       const decoded = this.jwtService.verify(token);
-      console.log("decode", decoded)
+      Logger.log("decode", decoded)
       const userId = decoded.email;
-      console.log("user id", userId)
+      Logger.log("user id", userId)
 
       const userExist = await this.userRepository.findOne({ where: {email: userId}});
-      console.log("userexisrt", userExist.id)
+      Logger.log("userexisrt", userExist.id)
       if (!userExist) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
@@ -189,12 +190,12 @@ export class AuthService {
     try {
 
       const decoded = this.jwtService.verify(token);
-      console.log("decode", decoded)
+      Logger.log("decode", decoded)
       const userId = decoded.id;
-      console.log("user id", userId)
+      Logger.log("user id", userId)
 
       const userExist = await this.userRepository.findOne({ where: {id: userId}});
-      console.log("userexisrt", userExist.id)
+      Logger.log("userexisrt", userExist.id)
       if (!userExist) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }

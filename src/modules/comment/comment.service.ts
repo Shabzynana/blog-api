@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from '../post/entities/post.entity';
@@ -31,8 +31,8 @@ export class CommentService {
     if (!fullPost) {
       throw new HttpException("Post Not Found",  HttpStatus.NOT_FOUND)
     }
-    console.log('Post ID:', postId);
-    console.log('Fetched Post:', fullPost);
+    Logger.log('Post ID:', postId);
+    Logger.log('Fetched Post:', fullPost);
 
 
     const comment = this.commentRepository.create({

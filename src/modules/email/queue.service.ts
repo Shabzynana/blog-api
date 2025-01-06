@@ -1,6 +1,6 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MailInterface } from './interface/MailInterface';
 
 Injectable();
@@ -12,7 +12,7 @@ export default class QueueService {
 
   async sendMail({ variant, mail }: MailSender) {
     const mailJob = await this.emailQueue.add(variant, { mail });
-    console.log({ jobId: mailJob.id });
+    Logger.log({ jobId: mailJob.id });
     return { jobId: mailJob.id };
 
   }

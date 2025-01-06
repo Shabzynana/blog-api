@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../user/entites/user.entity';
@@ -69,7 +69,7 @@ export class PostService {
       where: { id },
       relations: { author: true },
     });
-    console.log("blog", blog)
+    Logger.log("blog", blog)
     if (!blog) {
       throw new HttpException("Blog Not Found",  HttpStatus.NOT_FOUND)
     }
