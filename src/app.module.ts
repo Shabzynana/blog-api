@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import dataSource from './database/data-source';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
@@ -10,6 +10,7 @@ import { PostModule } from './modules/post/post.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { BullModule } from '@nestjs/bull';
+import { LoggerModule } from 'nestjs-pino';
 
 // import { BullBoard } from '@bull-board/express';
 // import { BullAdapter } from '@bull-board/express';
@@ -30,6 +31,7 @@ import { ExpressAdapter } from "@bull-board/express";
       envFilePath: ['.env', '.env.development'], // Specify custom .env files (optional)
       isGlobal: true, 
     }),
+    LoggerModule.forRoot(),
     TypeOrmModule.forRootAsync({
       useFactory: async () => ({
         ...dataSource.options,
@@ -40,9 +42,9 @@ import { ExpressAdapter } from "@bull-board/express";
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        console.log('SMTP Config:', {
+        Logger.log('SMTP Config:', {
           host: configService.get<string>('SMTP_HOST'),
-          port: configService.get<number>('SMTP_PORT'),
+          port: configService.get<string>('SMTP_PORT'),
           user: configService.get<string>('SMTP_USER'),
           pass: configService.get<string>('SMTP_PASSWORD'),
         }); 

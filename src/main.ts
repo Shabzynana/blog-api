@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DataSource } from 'typeorm';
+import { Logger } from 'nestjs-pino';
 import { initializeDataSource } from './database/data-source';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -8,17 +9,22 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = app.get(Logger);
+
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
   }));
 
   const dataSource = app.get(DataSource);
 
+  app.useLogger(logger);
+
+
   try {
     await initializeDataSource();
-    console.log('Data Source has been initialized!');
+    logger.log('Data Source has been initialized!');
   } catch (err) {
-    console.error('Error during Data Source initialization', err);
+    logger.log('Error during Data Source initialization', err);
     process.exit(1);
   }
 
